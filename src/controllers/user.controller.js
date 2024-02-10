@@ -3,6 +3,7 @@ import { ApiError } from "../utils/ApiError.js";
 import { User } from "../models/user.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
+import { compare } from "bcrypt";
 
 const registerUser = asyncHandler(async (req, res) => {
   const { fullname, email, username, password } = req.body;
@@ -21,7 +22,7 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new ApiError(400, "password is required");
   }
 
-  const existedUser = User.findOne({
+  const existedUser = await User.findOne({
     $or: [{ username }, { email }],
   });
 
@@ -47,7 +48,7 @@ const registerUser = asyncHandler(async (req, res) => {
     coverImage: coverImage.url || "",
     email,
     password,
-    username: username.toLowerCase,
+    username: username.toLowerCase(),
   });
 
   const createdUser = await User.findById(user._id).select(
