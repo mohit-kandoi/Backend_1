@@ -6,6 +6,7 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { compare } from "bcrypt";
 
 const registerUser = asyncHandler(async (req, res) => {
+  //   console.log("body: ", req.files, req.body);
   const { fullname, email, username, password } = req.body;
   console.log("email: ", email);
 
@@ -30,8 +31,10 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new ApiError(409, "User with email or username already exist");
   }
 
-  const avatarLocalPath = req.files?.avatar[0]?.path;
+  const avatarLocalPath = req.files?.avatar[0]?.path; // null?.avatar[].path == null
   const coverImageLocalPath = req.files?.coverImage[0]?.path;
+
+  //   const avatarLocalPath = req.files?req.files.avatar[0]?.path: null;
 
   if (!avatarLocalPath) {
     throw new ApiError(400, "Avatar is required");
